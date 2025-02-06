@@ -1,0 +1,146 @@
+.about {
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(
+      135deg,
+      rgba(42, 157, 143, 0.1) 0%,
+      rgba(38, 70, 83, 0.1) 100%
+    );
+  }
+  
+  .about-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .back-link {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    padding: 0;
+    transition: color 0.2s ease;
+  }
+  
+  .back-link:hover {
+    color: var(--secondary-color);
+  }
+  
+  .about-title {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 3rem;
+  }
+  
+  .about-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .about-section h2 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .about-section p {
+    color: #666;
+    line-height: 1.6;
+    font-size: 1.1rem;
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .feature-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+  }
+  
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--primary-color);
+    flex-shrink: 0;
+  }
+  
+  .feature-content {
+    flex: 1;
+  }
+  
+  .feature-content h3 {
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .feature-content p {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+  
+  .workflow-steps {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .step {
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 768px) {
+    .about-container {
+      padding: 1rem;
+    }
+    
+    .about-title {
+      font-size: 2rem;
+    }
+    
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+  } 
