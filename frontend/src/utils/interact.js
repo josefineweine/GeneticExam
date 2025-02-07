@@ -80,12 +80,12 @@ export const connectWallet = async () => {
 
 export const fetchDonors = async () => {
   try {
-    const donorCount = await contract.donorCount();  // Assuming donorCount is a public variable in your contract
+    const donorCount = await contract.donorCount();  
     const donorList = [];
 
     for (let i = 1; i <= donorCount; i++) {
-      const donor = await contract.donors(i);  // Assuming donors is a mapping in your contract
-      donorList.push(donor.metadataCID);  // Assuming metadataCID is the information you need to display
+      const donor = await contract.donors(i);  
+      donorList.push(donor.metadataCID);  
     }
 
     return donorList;

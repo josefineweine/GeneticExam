@@ -30,7 +30,6 @@ export const connectWallet = async () => {
 // Function to disconnect wallet (clear localStorage)
 export const disconnectWallet = () => {
   localStorage.removeItem('walletAddress'); // Remove wallet address from localStorage
-  // Optionally reset any state here if you're using this in React or elsewhere
   console.log('Wallet disconnected');
 };
 
