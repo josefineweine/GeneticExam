@@ -1,7 +1,9 @@
+
+
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { connectWallet, disconnectWallet } from '../../utils/web3'
-import Alert from '../common/Alert/Alert'
+import { connectWallet, disconnectWallet } from '../../utils/contractUtils'
+import Alert from '../Alert/Alert'
 import './Header.css'
 
 function Header() {
@@ -23,7 +25,6 @@ function Header() {
     checkWalletConnection()
 
     window.addEventListener('storage', checkWalletConnection)
-    
     window.addEventListener('walletChanged', checkWalletConnection)
 
     return () => {
@@ -38,6 +39,7 @@ function Header() {
       setError(null)
       const { address } = await connectWallet()
       setAccount(address)
+      localStorage.setItem('walletAddress', address) // Store the address in localStorage
       window.dispatchEvent(new Event('walletChanged'))
       navigate('/dashboard')
     } catch (error) {
@@ -49,7 +51,7 @@ function Header() {
 
   const handleDisconnect = async () => {
     try {
-      await disconnectWallet()
+      await disconnectWallet() // Call the disconnectWallet function
       setAccount('')
       window.dispatchEvent(new Event('walletChanged'))
       navigate('/')
@@ -60,7 +62,7 @@ function Header() {
 
   return (
     <header className="header">
-      <Link to="/" className="logo">GeneVault</Link>
+      <Link to="/" className="logo">Genetic Exam</Link>
       <div className="header-right">
         {error && <Alert type="error" message={error} />}
         <div className="wallet-buttons">
@@ -91,4 +93,4 @@ function Header() {
   )
 }
 
-export default Header 
+export default Header

@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { UserPlus, MagnifyingGlass, CheckCircle } from '@phosphor-icons/react'
-import { connectWallet } from '../../utils/web3'
-import { getDonors } from '../../utils/contractUtils'
-import Alert from '../common/Alert/Alert'
+import Alert from '../Alert/Alert'
 import SystemStatistics from '../SystemStatistics/SystemStatistics'
 import './Dashboard.css'
+import { connectWallet, getDonors } from '../../utils/contractUtils'
+
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -13,8 +12,7 @@ function Dashboard() {
   const [role, setRole] = useState('')
   const [isConnecting, setIsConnecting] = useState(false)
   const [error, setError] = useState(null)
-  const [formData, setFormData] = useState({
-  })
+  const [formData, setFormData] = useState({})
   const [stats, setStats] = useState({
     activeDonors: 0,
     successfulMatches: 0
@@ -22,18 +20,22 @@ function Dashboard() {
   const [donors, setDonors] = useState([])
   const [successfulMatches, setSuccessfulMatches] = useState([])
   const [pendingApprovals, setPendingApprovals] = useState([])
-  
+
   // Add success state to show message after registration
   const showSuccess = searchParams.get('success') === 'true'
-  
+
   useEffect(() => {
     const loadDonors = async () => {
-      const donors = await getDonors();
-      setDonors(donors);
-    };
-    
-    loadDonors();
-  }, []);
+      try {
+        const donors = await getDonors() // Ensure this function is available elsewhere in your code
+        setDonors(donors)
+      } catch (error) {
+        setError("Error loading donors from the blockchain")
+      }
+    }
+
+    loadDonors()
+  }, [])
 
   // Check if wallet is connected
   const isWalletConnected = localStorage.getItem('walletAddress')
@@ -43,6 +45,8 @@ function Dashboard() {
       setIsConnecting(true)
       setError(null)
       const { address } = await connectWallet()
+      // Storing wallet address in localStorage to indicate it's connected
+      localStorage.setItem('walletAddress', address)
       window.dispatchEvent(new Event('walletChanged'))
     } catch (error) {
       setError(error.message)
@@ -65,9 +69,8 @@ function Dashboard() {
   }
 
   const handleApprove = (approval) => {
-    // Add to successful matches
-    const successfulMatches = JSON.parse(localStorage.getItem('successfulMatches') || '[]')
-    successfulMatches.push({
+    const updatedMatches = JSON.parse(localStorage.getItem('successfulMatches') || '[]')
+    updatedMatches.push({
       id: approval.id,
       donorId: approval.donorId,
       donorName: approval.donorName,
@@ -75,7 +78,7 @@ function Dashboard() {
       status: 'matched',
       usageCount: approval.currentUsageCount + 1
     })
-    localStorage.setItem('successfulMatches', JSON.stringify(successfulMatches))
+    localStorage.setItem('successfulMatches', JSON.stringify(updatedMatches))
 
     // Remove from pending approvals
     const updatedApprovals = pendingApprovals.filter(a => a.id !== approval.id)
@@ -124,49 +127,34 @@ function Dashboard() {
           message="Donor successfully registered!" 
         />
       )}
-      <h2>Welcome to the Administrator Dashboard</h2>
-      <p className="dashboard-description">
-        Select an action to proceed with donor management
-      </p>
+      <h2>Welcome to the Dashboard</h2>
+      
 
       <div className="action-cards">
         <div className="action-card" onClick={() => handleRoleSelect('donor')}>
           <div className="card-icon">
-            <UserPlus size={32} weight="light" />
+            {}
           </div>
-          <h3>Register New Donor</h3>
-          <p>Upload new sperm donor information and genetic data</p>
-          <ul>
-            <li>Enter donor personal information</li>
-            <li>Upload medical history</li>
-            <li>Process genetic data</li>
-          </ul>
+          <h3>Register a New Donor</h3>
+      
+        
         </div>
 
         <div className="action-card" onClick={() => navigate('/donors')}>
           <div className="card-icon">
-            <MagnifyingGlass size={32} weight="light" />
+            {}
           </div>
           <h3>View Donors</h3> 
-          <p>Browse and manage registered donors</p>
-          <ul>
-            <li>View all registered donors</li>
-            <li>Search donor database</li>
-            <li>Access detailed profiles</li>
-          </ul>
+          
+          
         </div>
 
         <div className="action-card" onClick={() => navigate('/match')}>
           <div className="card-icon">
-            <MagnifyingGlass size={32} weight="light" />
+            {}
           </div>
           <h3>Find Donor Match</h3> 
-          <p>Search and match donors for recipients</p>
-          <ul>
-            <li>Search by criteria</li>
-            <li>Compare donor profiles</li>
-            <li>Process matching requests</li>
-          </ul>
+        
         </div>
       </div>
 
@@ -180,7 +168,7 @@ function Dashboard() {
                 <h4>{donor.name}</h4>
                 <p>Age: {donor.age}</p>
                 <div className="match-status">
-                  <CheckCircle size={24} weight="fill" />
+                  {/* Replace this with actual icons as needed */}
                   Matched Successfully
                 </div>
               </div>
@@ -225,4 +213,4 @@ function Dashboard() {
   )
 }
 
-export default Dashboard 
+export default Dashboard

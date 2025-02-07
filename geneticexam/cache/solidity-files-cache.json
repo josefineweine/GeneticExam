@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/josefinewejnefalk/Documents/GeneticExam/geneticexam/contracts/DonorRegistry.sol": {
-      "lastModificationDate": 1738616409311,
-      "contentHash": "e4879c011f349bca202a818b9de99621",
+      "lastModificationDate": 1738870902672,
+      "contentHash": "385a96692a1d59946bc0c1d39494ee5f",
       "sourceName": "contracts/DonorRegistry.sol",
       "solcConfig": {
         "version": "0.8.0",

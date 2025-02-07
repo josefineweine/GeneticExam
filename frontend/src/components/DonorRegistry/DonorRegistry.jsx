@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { connectWallet, getCurrentWalletConnected, fetchDonors, registerDonor } from '../utils/interact';
+import { connectWallet, fetchDonors, registerDonor } from '../../utils/interact';
 
 const DonorRegistry = () => {
   const [walletAddress, setWalletAddress] = useState('');
@@ -9,10 +10,10 @@ const DonorRegistry = () => {
 
   useEffect(() => {
     const loadWalletAndDonors = async () => {
-      const { address } = await getCurrentWalletConnected();
+      const { address, status } = await connectWallet();
       setWalletAddress(address);
+      setStatus(status);
       if (address) {
-        setStatus('Wallet connected');
         const donorList = await fetchDonors();
         setDonors(donorList);
       }
@@ -22,23 +23,29 @@ const DonorRegistry = () => {
 
   const handleConnectWallet = async () => {
     try {
-      const { address, provider, network } = await connectWallet();
+      const { address, status } = await connectWallet();
       setWalletAddress(address);
-      setStatus('Connected to MetaMask');
-      const donorList = await fetchDonors();
-      setDonors(donorList);
+      setStatus(status);
+      if (address) {
+        const donorList = await fetchDonors();
+        setDonors(donorList);
+      }
     } catch (error) {
-      setStatus(error.message);
+      setStatus('Error connecting wallet: ' + error.message);
     }
   };
 
   const handleRegisterDonor = async () => {
+    if (!donorData) {
+      setStatus('Please provide a valid CID');
+      return;
+    }
+
     try {
       setStatus('Registering donor...');
-      const result = await registerDonor(walletAddress, donorData);  // Pass wallet address and metadata
-      setStatus('Donor registered successfully!');
-      console.log(result);
-      const donorList = await fetchDonors(); // Refresh donors list
+      const result = await registerDonor(walletAddress, donorData);
+      setStatus(result);  // Show registration status
+      const donorList = await fetchDonors(); // Refresh the donor list
       setDonors(donorList);
     } catch (error) {
       setStatus('Error registering donor: ' + error.message);
@@ -58,7 +65,7 @@ const DonorRegistry = () => {
           {donors.length > 0 ? (
             <ul>
               {donors.map((donor, index) => (
-                <li key={index}>{donor}</li>
+                <li key={index}>{donor}</li>  // Display donor metadata CID
               ))}
             </ul>
           ) : (

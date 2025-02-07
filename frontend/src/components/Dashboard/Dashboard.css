@@ -261,7 +261,7 @@
   
   .role-button {
     background: var(--primary-color);
-    color: white;
+    color: black;
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 6px;
@@ -414,7 +414,7 @@
   
   .connect-wallet-section .connect-button {
     background: var(--primary-color);
-    color: white;
+    color: black;
     border: none;
     padding: 0.8rem 2rem;
     border-radius: 8px;
