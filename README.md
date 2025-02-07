@@ -27,5 +27,28 @@ METADATA_CID=QmQmpXJBCos24nPQ9FtPoiqFAFNSswuqRaP5yNfE2AMUdg (this is to be used 
    
 
 
+<<<<<<< HEAD
 6. Access the Project:
    Open your browser and go to the URL specified in the project (e.g., http://localhost:3000 for frontend and backend ports) to access the application.
+=======
+5. Access the Project:
+   Open your browser and go to http://localhost:3000 (or the URL specified in the project) to access the application.
+
+Sure! Here's a more concise summary of the contract's functionality:
+
+### Main Contract Handling Donor Registration and Usage Tracking:
+
+- **Register New Donors**: 
+  - Users can register new donors by providing metadata (e.g., CID) and a maximum usage limit.
+  - Each donor is assigned a unique ID and the registering user is recorded as the owner.
+
+- **Track Donor Usage**:
+  - Donor usage is tracked with a `usageCount`, which is incremented each time the donor is used.
+
+- **Enforce Usage Limits**:
+  - Each donor has a `maxUsage` limit.
+  - If a donor’s usage reaches the limit, the donor’s status is set to inactive, preventing further usage.
+
+- **Manage Donor Status**:
+  - Donor status (`isActive`) is updated based on usage, automatically deactivating the donor once the usage limit is reached.
+>>>>>>> 8671de7fef193fa8f331a09a339ee4926c264b57
