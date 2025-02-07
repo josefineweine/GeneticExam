@@ -2,5 +2,5 @@
 
 import contractABI from './contract-abi.json';
 
-export const CONTRACT_ADDRESS = '0x0b54FAD894c1EFC7B190cE92D122F5E93704D04B';  // Update with your contract address
+export const CONTRACT_ADDRESS = '0x3247f6b66F24F672EAcF52080e0381fA45DEb307';  // Update with your contract address
 export const CONTRACT_ABI = contractABI;
