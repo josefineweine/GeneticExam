@@ -1,57 +1,88 @@
-// src/pages/ConnectWallet.jsx
+import { useState, useEffect } from 'react';
+import Web3 from 'web3'; 
 
-import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
-import { useNavigate } from 'react-router-dom';
-
-function ConnectWallet() {
+const ConnectWallet = () => {
   const [account, setAccount] = useState(null);
-  const [isConnecting, setIsConnecting] = useState(false);
-  const navigate = useNavigate();
+  const [network, setNetwork] = useState(null);
+  const [networkName, setNetworkName] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Automatically check if a wallet is already connected
-    const checkWalletConnection = async () => {
-      if (window.ethereum) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const accounts = await provider.listAccounts();
-        if (accounts.length > 0) {
-          setAccount(accounts[0]);
-          navigate('/dashboard');
-        }
-      }
-    };
-    checkWalletConnection();
-  }, [navigate]);
+  const fetchNetwork = async () => {
+    if (window.ethereum && account) {
+      try {
+        const web3 = new Web3(window.ethereum); 
+        const networkId = await web3.eth.net.getId();
+        setNetwork(networkId);
 
-  const handleConnect = async () => {
-    try {
-      setIsConnecting(true);
-      if (window.ethereum) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        setAccount(address);
-        navigate('/dashboard');
-      } else {
-        alert('Please install MetaMask to connect your wallet');
+        // Fetch the network name (optional, for a better UX)
+        const networkName = await web3.eth.net.getNetworkType();
+        setNetworkName(networkName);
+      } catch (error) {
+        console.error('Error fetching network:', error);
       }
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
-    } finally {
-      setIsConnecting(false);
     }
   };
 
+  useEffect(() => {
+    // On initial load, check if the wallet is already connected
+    const storedAddress = localStorage.getItem('walletAddress');
+    if (storedAddress) {
+      setAccount(storedAddress);
+      fetchNetwork(); 
+    }
+
+    if (window.ethereum) {
+      // Listen for chain changes (when the user switches networks)
+      window.ethereum.on('chainChanged', fetchNetwork); 
+    }
+
+    return () => {
+      if (window.ethereum) {
+        // Cleanup event listener on unmount
+        window.ethereum.removeListener('chainChanged', fetchNetwork); 
+      }
+    };
+  }, []); // Empty dependency array ensures this only runs on mount
+
+  const handleConnect = async () => {
+    setLoading(true);
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const address = accounts[0];
+      setAccount(address);
+      localStorage.setItem('walletAddress', address);
+      await fetchNetwork();
+    } catch (error) {
+      console.error('Connection failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDisconnect = () => {
+    setAccount(null);
+    setNetwork(null);
+    setNetworkName('');
+    localStorage.removeItem('walletAddress');
+  };
+
   return (
-    <div>
-      <h2>Connect your Wallet</h2>
-      <button onClick={handleConnect} disabled={isConnecting}>
-        {isConnecting ? 'Connecting...' : 'Connect Wallet'}
-      </button>
+    <div className="connect-wallet">
+      {loading && <p>Loading...</p>}
+
+      {account ? (
+        <div>
+          <p>Connected: {account}</p>
+          <p>Network: {networkName ? `${networkName} (${network})` : 'N/A'}</p>
+          <button className="disconnect-button" onClick={handleDisconnect}>Disconnect</button>
+        </div>
+      ) : (
+        <div>
+          <button onClick={handleConnect}>Connect Wallet</button>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default ConnectWallet;

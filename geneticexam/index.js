@@ -1,17 +1,22 @@
-// Setup: npm install alchemy-sdk
+// Setup: npm install alchemy-sdk dotenv
+require('dotenv').config();
 const { Network, Alchemy } = require("alchemy-sdk");
 
-// Optional Config object, but defaults to demo api-key and eth-mainnet.
+// Use the API key stored in .env for security
 const settings = {
-    apiKey: "kkpuSY8k-FdrItSL4otQX1ZEht2tUh7p",
-    network: Network.ETH_MAINNET, // Replace with your network.
+    apiKey: process.env.ALCHEMY_API_KEY,  // Set your Alchemy API key here in .env file
+    network: Network.ETH_SEPOLIA, // Use Sepolia testnet here, or choose another network if needed
 };
 
 const alchemy = new Alchemy(settings);
 
 async function main() {
-  const latestBlock = await alchemy.core.getBlockNumber();
-  console.log("The latest block number is", latestBlock);
+  try {
+    const latestBlock = await alchemy.core.getBlockNumber();
+    console.log("The latest block number is", latestBlock);
+  } catch (error) {
+    console.error("Error fetching block number:", error);
+  }
 }
 
 main();

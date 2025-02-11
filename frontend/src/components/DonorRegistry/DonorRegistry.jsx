@@ -1,89 +1,79 @@
+import { useState, useEffect } from 'react';
+import { getDonors, registerDonor } from '../../utils/contractUtils'; // your contract interaction methods
 
-import React, { useState, useEffect } from 'react';
-import { connectWallet, fetchDonors, registerDonor } from '../../utils/interact';
-
-const DonorRegistry = () => {
-  const [walletAddress, setWalletAddress] = useState('');
-  const [status, setStatus] = useState('');
+const DonorRegistry = ({ walletAddress }) => {
+  const [metadataCID, setMetadataCID] = useState('');
+  const [maxUsage, setMaxUsage] = useState('');
   const [donors, setDonors] = useState([]);
-  const [donorData, setDonorData] = useState('');
 
-  useEffect(() => {
-    const loadWalletAndDonors = async () => {
-      const { address, status } = await connectWallet();
-      setWalletAddress(address);
-      setStatus(status);
-      if (address) {
-        const donorList = await fetchDonors();
-        setDonors(donorList);
-      }
-    };
-    loadWalletAndDonors();
-  }, []);
-
-  const handleConnectWallet = async () => {
-    try {
-      const { address, status } = await connectWallet();
-      setWalletAddress(address);
-      setStatus(status);
-      if (address) {
-        const donorList = await fetchDonors();
-        setDonors(donorList);
-      }
-    } catch (error) {
-      setStatus('Error connecting wallet: ' + error.message);
-    }
-  };
-
+  // Handle donor registration
   const handleRegisterDonor = async () => {
-    if (!donorData) {
-      setStatus('Please provide a valid CID');
-      return;
-    }
-
     try {
-      setStatus('Registering donor...');
-      const result = await registerDonor(walletAddress, donorData);
-      setStatus(result);  // Show registration status
-      const donorList = await fetchDonors(); // Refresh the donor list
+      const result = await registerDonor(metadataCID, maxUsage);
+      alert(`Donor registered successfully. Donor ID: ${result.donorId}`);
+      setMetadataCID('');
+      setMaxUsage('');
+      // Refresh the donor list after successful registration
+      const donorList = await getDonors();
       setDonors(donorList);
     } catch (error) {
-      setStatus('Error registering donor: ' + error.message);
+      console.error('Error registering donor:', error);
+      alert('An error occurred while registering the donor.');
     }
   };
 
+  // Fetch the donor list on initial load
+  useEffect(() => {
+    const loadDonors = async () => {
+      try {
+        const donorList = await getDonors();
+        setDonors(donorList);
+      } catch (error) {
+        console.error('Error fetching donors:', error);
+      }
+    };
+    loadDonors();
+  }, []);
+
   return (
-    <div id="donorRegistryContainer">
-      <button id="connectWalletButton" onClick={handleConnectWallet}>
-        {walletAddress ? `Connected: ${walletAddress.slice(0, 6)}...` : 'Connect Wallet'}
-      </button>
-      <p>{status}</p>
-
-      {walletAddress && (
-        <div>
-          <h2>Registered Donors:</h2>
-          {donors.length > 0 ? (
-            <ul>
-              {donors.map((donor, index) => (
-                <li key={index}>{donor}</li>  // Display donor metadata CID
-              ))}
-            </ul>
-          ) : (
-            <p>No donors found.</p>
-          )}
-
-          <h2>Register a New Donor</h2>
+    <div>
+      <h2>Donor Registry</h2>
+      {!walletAddress ? (
+        <p>Please connect your wallet to register a donor.</p>
+      ) : (
+        <>
+          <h3>Register New Donor</h3>
           <input
             type="text"
-            value={donorData}
-            onChange={(e) => setDonorData(e.target.value)}
-            placeholder="Enter donor metadata CID"
+            placeholder="Metadata CID"
+            value={metadataCID}
+            onChange={(e) => setMetadataCID(e.target.value)}
           />
-          <button id="registerDonorButton" onClick={handleRegisterDonor}>
-            Register Donor
-          </button>
-        </div>
+          <input
+            type="number"
+            placeholder="Max Usage"
+            value={maxUsage}
+            onChange={(e) => setMaxUsage(e.target.value)}
+          />
+          <button onClick={handleRegisterDonor}>Register Donor</button>
+        </>
       )}
+
+      <div>
+        <h3>Donor List</h3>
+        {donors.length > 0 ? (
+          donors.map((donor) => (
+            <div key={donor.id}>
+              <h4>{donor.name}</h4>
+              {/* Render other donor details */}
+              <p>Donor ID: {donor.id}</p>
+              {/* Add more details if necessary */}
+            </div>
+          ))
+        ) : (
+          <p>No donors found.</p>
+        )}
+      </div>
     </div>
   );
 };

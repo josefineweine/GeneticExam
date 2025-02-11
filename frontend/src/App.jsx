@@ -3,14 +3,9 @@ import Header from './components/Header/Header';
 import About from './components/About/About';
 import Dashboard from './components/Dashboard/Dashboard';
 import Upload from './components/Upload/Upload';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import DonorProfile from './components/DonorProfile/DonorProfile';
-import DonorList from './components/DonorList/DonorList';
 import DonorMatch from './components/DonorMatch/DonorMatch';
-import DonorRegistry from './components/DonorRegistry/DonorRegistry';
-import MatchingDonor from './components/MatchingDonor/MatchingDonor';
-import SystemStatistics from './components/SystemStatistics/SystemStatistics';
-import ConnectWallet from './components/ConnectWallet/ConnectWallet';
-
 import './App.css';
 
 function App() {
@@ -21,18 +16,15 @@ function App() {
           <Header />
           <main className="main">
             <Routes>
-              {/* Home page (About page) */}
+              {/* Add the HeroAndAbout as the default (home) page */}
               <Route path="/" element={<About />} />
-              {}
-              <Route path="/connect-wallet" element={<ConnectWallet />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/upload" element={<Upload />} />
-              <Route path="/donors" element={<DonorList />} />
-              <Route path="/donor/:id" element={<DonorProfile />} />
-              <Route path="/match" element={<DonorMatch />} />
-              <Route path="/donor-registry" element={<DonorRegistry />} />
-              <Route path="/matching-donor" element={<MatchingDonor />} />
-              <Route path="/system-statistics" element={<SystemStatistics />} />
+
+              {/* Other routes */}
+              <Route path="/about" element={<About />} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+              <Route path="/donor/:id" element={<ProtectedRoute><DonorProfile /></ProtectedRoute>} />
+              <Route path="/match" element={<ProtectedRoute><DonorMatch /></ProtectedRoute>} />
             </Routes>
           </main>
         </div>

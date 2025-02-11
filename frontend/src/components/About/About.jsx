@@ -1,28 +1,23 @@
-import { useNavigate } from 'react-router-dom';
-import './About.css';
+import React from 'react';
 
-function About() {
-  const navigate = useNavigate();
-
-  // Handle navigating to connect wallet page
-  const handleGetConnected = () => {
-    navigate('/connect-wallet'); // Navigate to the "Connect Wallet" page
-  };
+const HeroAndAbout = () => {
 
   return (
-    <div className="about">
-      <div className="about-container">
-        <h1>Welcome to the Genetic dApp</h1>
-       
+    <div className="hero-and-about">
+      {/* Hero Section */}
+      <section className="hero">
+        <div className="hero-content">
+          <div className="hero-text">
+            <h1 className="hero-title">
+              Protect Your <span className="highlight">Genetic Information</span> with Blockchain
+            </h1>
 
-        <div className="get-connected">
-          <button onClick={handleGetConnected}>
-            Get Connected
-          </button>
+          </div>
         </div>
-      </div>
+      </section>
+    
     </div>
   );
-}
+};
 
-export default About;
+export default HeroAndAbout;

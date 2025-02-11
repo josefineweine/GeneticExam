@@ -1,89 +1,61 @@
-import { ethers } from 'ethers';
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../config/DonorRegistry';
+import { getContract, getWalletAddress } from './web3';
 
-// Function to connect wallet
-export const connectWallet = async () => {
+export const getDonorById = async (donorId) => {
   try {
-    if (window.ethereum) {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-
-      const address = await signer.getAddress();
-      console.log('Connected wallet address:', address);
-
-      // Store wallet address in localStorage for persistence
-      localStorage.setItem('walletAddress', address);
-
-      return address; // Return the connected wallet address
-    } else {
-      console.error('Ethereum provider not detected.');
-      return null;
-    }
+    const contractInstance = getContract();
+    const donorData = await contractInstance.methods.getDonorById(donorId).call();
+    return donorData;
   } catch (error) {
-    console.error('Error connecting wallet:', error);
-    return null;
+    console.error('Error fetching donor by ID:', error);
+    throw error;
   }
 };
 
-// Function to disconnect wallet (clear localStorage)
-export const disconnectWallet = () => {
-  localStorage.removeItem('walletAddress'); // Remove wallet address from localStorage
-  console.log('Wallet disconnected');
-};
-
-// Store donor data in the blockchain (smart contract)
-export const storeDonorData = async (metadataCID) => {
+export const updateSuccessfulMatches = async (donorId) => {
   try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-    
-    // Call registerDonor with metadataCID
-    const transaction = await contract.registerDonor(metadataCID);
-    await transaction.wait();
+    const contractInstance = getContract();
+    const sender = getWalletAddress();
 
-    return {
-      success: true,
-      metadataCID,
-      transactionHash: transaction.hash,
-    };
+    if (!sender) throw new Error("Wallet not connected");
+
+    const tx = await contractInstance.methods.incrementDonorUsage(donorId).send({
+      from: sender,
+    });
+
+    console.log('Successfully updated successful matches:', tx);
+    return tx;
   } catch (error) {
-    console.error('Error storing donor data:', error);
-    return { success: false, error };
+    console.error('Error updating successful matches:', error);
+    throw error;
   }
 };
 
-// Fetch all donors from the smart contract
+// Fetch all donors
 export const getDonors = async () => {
   try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
-
-    const donorCount = await contract.donorCount();
-    if (!donorCount || donorCount.toString() === "0") {
-      console.warn("No donors found.");
-      return []; // Return empty array if no donors exist
-    }
-
-    const donors = [];
+    const contractInstance = getContract();
+    const donorAddresses = await contractInstance.methods.getDonors().call(); 
     
-    for (let i = 1; i <= donorCount; i++) {
-      const donor = await contract.donors(i);
-      donors.push({
-        id: donor.id.toString(),
-        metadataCID: donor.metadataCID, // Storing metadataCID
-        isActive: donor.isActive,
-        usageCount: donor.usageCount.toString(),
-        maxUsage: donor.maxUsage.toString(),
-      });
-    }
+    const donors = await Promise.all(donorAddresses.map(async (address) => {
+      const metadataCID = await contractInstance.methods.getDonorMetadata(address).call(); 
+      const usageCount = await contractInstance.methods.getDonorUsage(address).call(); 
+      return { address, metadataCID, usageCount };
+    }));
 
-    return donors;
+    return donors; 
   } catch (error) {
     console.error('Error fetching donors:', error);
+    throw error;
+  }
+};
+
+export const getTotalSuccessfulMatches = async () => {
+  try {
+    const contractInstance = getContract();
+    const totalMatches = await contractInstance.methods.getTotalSuccessfulMatches().call();
+    return totalMatches;
+  } catch (error) {
+    console.error('Error fetching total successful matches:', error);
     throw error;
   }
 };

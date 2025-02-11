@@ -1,26 +1,59 @@
-// scripts/interact.js
+const { ethers } = require("hardhat");
 require("dotenv").config();
-const { ethers } = require("ethers");
+const { Network, Alchemy } = require("alchemy-sdk");
 
-const API_URL = process.env.API_URL;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
-const contract = require("../artifacts/contracts/DonorRegistry.sol/DonorRegistry.json");
+// ✅ Import ABI from JSON file in `src/config`
+const fs = require("fs");
+const path = require("path");
+const contractABI = require(path.join(__dirname, "../frontend/src/config/contract-abi.json"));
 
-const provider = new ethers.providers.JsonRpcProvider(API_URL);
-const signer = new ethers.Wallet(PRIVATE_KEY, provider);
-const donorRegistry = new ethers.Contract(CONTRACT_ADDRESS, contract.abi, signer);
+// ✅ Define contract address from your config
+const donorRegistryAddress = "0x2300DAaa57ec42a93AA5892619A59534d9021bf7";
+
+// ✅ Set up Alchemy API key and network
+const settings = {
+  apiKey: process.env.ALCHEMY_API_KEY,
+  network: Network.ETH_SEPOLIA,
+};
+const alchemy = new Alchemy(settings);
 
 async function main() {
+  console.log("🚀 Starting script...");
+
+  // ✅ Get signer (Required to send transactions)
+  const [signer] = await ethers.getSigners();
+  console.log(`🟢 Using signer: ${signer.address}`);
+
+  // ✅ Get contract instance using imported ABI
+  const DonorRegistry = new ethers.Contract(donorRegistryAddress, contractABI, signer);
+
+  console.log("🟢 Contract instance retrieved successfully!");
+
+  // ✅ Register a new donor
+  const metadataCID = "QmQmpXJBCos24nPQ9FtPoiqFAFNSswuqRaP5yNfE2AMUdg";  
+  const maxUsage = 5;
+
+  console.log(`📌 Registering donor with metadata CID: ${metadataCID} and max usage: ${maxUsage}`);
+
   try {
-    console.log("Registering a new donor...");
-    const metadataCID = "QmSomeIPFSHashForDonorDetails"; // Replace with actual CID
-    const tx = await donorRegistry.registerDonor(metadataCID);
-    await tx.wait();
-    console.log("Donor registered successfully!");
+    const tx = await DonorRegistry.registerDonor(metadataCID, maxUsage);
+    await tx.wait();  // Wait for the transaction to be mined
+    console.log(`✅ Donor registered successfully. Transaction hash: ${tx.hash}`);
   } catch (error) {
-    console.error("Error registering donor:", error);
+    console.error("❌ Error registering donor:", error);
+  }
+
+  // ✅ Fetch and print updated donor count
+  try {
+    const donorCount = await DonorRegistry.donorCount();
+    console.log("🟢 Total donors registered:", donorCount.toString());
+  } catch (error) {
+    console.error("❌ Error fetching donor count:", error);
   }
 }
 
-main();
+// ✅ Run the script and handle errors
+main().catch((error) => {
+  console.error("❌ Script Error:", error);
+  process.exit(1);
+});

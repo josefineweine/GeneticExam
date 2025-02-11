@@ -1,25 +1,14 @@
 require('dotenv').config();
-require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-etherscan");
-
-const { API_URL, PRIVATE_KEY } = process.env;
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+require('@nomiclabs/hardhat-ethers');
 
 module.exports = {
   solidity: "0.8.0", 
-  defaultNetwork: "localhost",  
+  defaultNetwork: "hardhat", 
   networks: {
     hardhat: {},
-    localhost: {
-      url: "http://127.0.0.1:8545", 
-      accounts: [`0x${PRIVATE_KEY}`] 
-    },
     sepolia: {
-      url: API_URL,
-      accounts: [`0x${PRIVATE_KEY}`]
+      url: process.env.API_URL, // Use the Alchemy URL for Sepolia
+      accounts: [`0x${process.env.PRIVATE_KEY}`]  // Use your private key
     }
   },
-  etherscan: {
-    apiKey: ETHERSCAN_API_KEY
-  }
 };

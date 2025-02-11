@@ -7,11 +7,15 @@
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
-    "alchemy-sdk": "^3.5.1",
+    "alchemy-sdk": "^3.5.2",
     "crypto-browserify": "^3.12.1",
     "dotenv": "^16.4.7",
-    "ethers": "5.7.2",
-    "hardhat": "^2.22.18",
-    "save-dev": "^0.0.1-security"
+    "ethers": "^5.0.0",
+    "save-dev": "^0.0.1-security",
+    "web3": "^4.16.0"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "hardhat": "^2.22.18"
   }
 }

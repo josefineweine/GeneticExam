@@ -17,26 +17,21 @@ contract DonorRegistry {
 
     event DonorRegistered(uint256 indexed donorId, address indexed owner, string metadataCID);
     event DonorUsageUpdated(uint256 indexed donorId, uint256 newUsageCount);
+    event SuccessfulMatchIncremented(uint256 newTotalMatches);
 
-    // Register a new donor with dynamic max usage
+    constructor() {
+    }
+
     function registerDonor(string memory metadataCID, uint256 _maxUsage) public {
         require(bytes(metadataCID).length > 0, "Metadata CID cannot be empty");
         require(_maxUsage > 0, "Max usage must be greater than zero");
 
         donorCount++;
-        donors[donorCount] = Donor({
-            id: donorCount,
-            metadataCID: metadataCID,
-            usageCount: 0,
-            maxUsage: _maxUsage,
-            isActive: true,
-            owner: msg.sender // The address registering the donor
-        });
+        donors[donorCount] = Donor(donorCount, metadataCID, 0, _maxUsage, true, msg.sender);
 
         emit DonorRegistered(donorCount, msg.sender, metadataCID);
     }
 
-    // Increment the usage count for a donor and deactivate if max usage is reached
     function incrementDonorUsage(uint256 donorId) public {
         require(donorId > 0 && donorId <= donorCount, "Invalid donor ID");
         require(donors[donorId].isActive, "Donor is not active");
@@ -49,18 +44,24 @@ contract DonorRegistry {
         }
 
         totalSuccessfulMatches++;
-
         emit DonorUsageUpdated(donorId, donors[donorId].usageCount);
+        emit SuccessfulMatchIncremented(totalSuccessfulMatches);  
     }
 
-    // Getter function to retrieve donor details
     function getDonor(uint256 donorId) public view returns (Donor memory) {
         require(donorId > 0 && donorId <= donorCount, "Invalid donor ID");
         return donors[donorId];
     }
 
-    // Getter function to retrieve total successful matches
     function getTotalSuccessfulMatches() public view returns (uint256) {
         return totalSuccessfulMatches;
+    }
+
+    function getDonors() public view returns (Donor[] memory) {
+        Donor[] memory allDonors = new Donor[](donorCount);  
+        for (uint256 i = 1; i <= donorCount; i++) {
+            allDonors[i - 1] = donors[i];  
+        }
+        return allDonors;
     }
 }
