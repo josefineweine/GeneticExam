@@ -1,1 +1,274 @@
-[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"donorId","type":"uint256"},{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"string","name":"metadataCID","type":"string"}],"name":"DonorRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"donorId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newUsageCount","type":"uint256"}],"name":"DonorUsageUpdated","type":"event"},{"inputs":[],"name":"donorCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"donors","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"metadataCID","type":"string"},{"internalType":"uint256","name":"usageCount","type":"uint256"},{"internalType":"uint256","name":"maxUsage","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"address","name":"owner","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"donorId","type":"uint256"}],"name":"incrementDonorUsage","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"metadataCID","type":"string"}],"name":"registerDonor","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"totalSuccessfulMatches","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "donorId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "metadataCID",
+        "type": "string"
+      }
+    ],
+    "name": "DonorRegistered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "donorId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newUsageCount",
+        "type": "uint256"
+      }
+    ],
+    "name": "DonorUsageUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newTotalMatches",
+        "type": "uint256"
+      }
+    ],
+    "name": "SuccessfulMatchIncremented",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "donorCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "donors",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "metadataCID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "usageCount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxUsage",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isActive",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "donorId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getDonor",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataCID",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "usageCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxUsage",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct DonorRegistry.Donor",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getDonors",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataCID",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "usageCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxUsage",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct DonorRegistry.Donor[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalSuccessfulMatches",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "donorId",
+        "type": "uint256"
+      }
+    ],
+    "name": "incrementDonorUsage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "metadataCID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_maxUsage",
+        "type": "uint256"
+      }
+    ],
+    "name": "registerDonor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSuccessfulMatches",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
