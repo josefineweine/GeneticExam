@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { getContract } from '../../contracts/contract'; // Import contract
 import { connectWallet } from '../../utils/web3';
-import { getDonors, updateSuccessfulMatches } from '../../utils/contractUtils';
 import Alert from '../common/Alert';
 
 function Dashboard() {
@@ -12,16 +12,36 @@ function Dashboard() {
   const [pendingApprovals, setPendingApprovals] = useState([]);
   const [donors, setDonors] = useState([]);
   const [successfulMatches, setSuccessfulMatches] = useState([]);
+  const [donorCount, setDonorCount] = useState(null); // New state for donor count
 
   const showSuccess = searchParams.get('success') === 'true';
 
   useEffect(() => {
-    const loadDonors = async () => {
+    const loadBlockchainData = async () => {
       try {
-        const donorsData = await getDonors();
-        setDonors(donorsData);
+        const contract = await getContract();
+        if (!contract) {
+          console.error("Contract not loaded!");
+          return;
+        }
+
+        // Fetch donor count from the contract
+        const count = await contract.donorCount();
+        setDonorCount(count.toString());
+
+        // Fetch donor list from contract
+        const donorsData = await contract.getDonors();
+        const formattedDonors = donorsData.map(donor => ({
+          id: donor.id.toString(),
+          metadataCID: donor.metadataCID,
+          usageCount: donor.usageCount.toString(),
+          maxUsage: donor.maxUsage.toString(),
+          isActive: donor.isActive,
+          owner: donor.owner
+        }));
+        setDonors(formattedDonors);
       } catch (error) {
-        console.error('Error fetching donors:', error);
+        console.error("Error fetching blockchain data:", error);
       }
     };
 
@@ -32,7 +52,7 @@ function Dashboard() {
       }
     };
 
-    loadDonors();
+    loadBlockchainData();
     loadPendingApprovals();
   }, []);
 
@@ -53,7 +73,8 @@ function Dashboard() {
 
   const handleApprove = async (approval) => {
     try {
-      await updateSuccessfulMatches(approval.donorId);
+      const contract = await getContract();
+      await contract.incrementDonorUsage(approval.donorId);
       console.log('Match successfully recorded on-chain!');
 
       const updatedMatches = [
@@ -108,6 +129,9 @@ function Dashboard() {
       {showSuccess && <Alert type="success" message="Donor successfully registered!" />}
       <h2>Welcome to Donor site!</h2>
 
+      {/* Display Donor Count from Smart Contract */}
+      <h3> Total Registered Donors: {donorCount !== null ? donorCount : "Loading..."}</h3>
+
       {/* Action Cards */}
       <div className="action-cards">
         <div className="action-card" onClick={() => navigate('/upload?role=donor')}>
@@ -121,7 +145,21 @@ function Dashboard() {
         </div>
       </div>
 
-
+      {/* List of Donors */}
+      <h2>Registered Donors</h2>
+      {donors.length > 0 ? (
+        <ul>
+          {donors.map((donor) => (
+            <li key={donor.id}>
+              <strong>ID:</strong> {donor.id} | <strong>Owner:</strong> {donor.owner} |
+              <strong>Usage:</strong> {donor.usageCount}/{donor.maxUsage} |
+              <strong>Status:</strong> {donor.isActive ? "Active" : "Inactive"}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Loading donors...</p>
+      )}
     </div>
   );
 }
