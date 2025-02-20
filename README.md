@@ -1,3 +1,4 @@
+
 🚀 How to Clone and Run This Project
 
 📌 1. Prerequisites
@@ -55,6 +56,9 @@ REACT_APP_ALCHEMY_KEY=YOUR_ALCHEMY_API_KEY
 
       •     Replace 0xYourDeployedContractAddress with the smart contract’s address.
       •     Replace YOUR_ALCHEMY_API_KEY with your actual Alchemy API key.
+
+
+      Sidenote: You can use my contract adress if you want: 0x2300DAaa57ec42a93AA5892619A59534d9021bf7
 
 📌 5. Start the Project
 
