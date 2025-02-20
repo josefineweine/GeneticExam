@@ -43,22 +43,22 @@ API_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY<br>
 PRIVATE_KEY=YOUR_WALLET_PRIVATE_KEY<br>
 ETHERSCAN_API_KEY=YOUR_ETHERSCAN_API_KEY<br>
 
-      •     Replace YOUR_ALCHEMY_API_KEY with your actual Alchemy API key.
-      •     Replace YOUR_WALLET_PRIVATE_KEY with your MetaMask private key (Sepolia testnet).
-      •     Replace YOUR_ETHERSCAN_API_KEY (optional, used for verifying contracts).
+      •     Replace YOUR_ALCHEMY_API_KEY with your actual Alchemy API key.<br>
+      •     Replace YOUR_WALLET_PRIVATE_KEY with your MetaMask private key (Sepolia testnet).<br>
+      •     Replace YOUR_ETHERSCAN_API_KEY (optional, used for verifying contracts).<br>
 
 ✅ Frontend (frontend/.env)
 
 Create a .env file inside the frontend/ folder and add:
 
-REACT_APP_CONTRACT_ADDRESS=0xYourDeployedContractAddress
-REACT_APP_ALCHEMY_KEY=YOUR_ALCHEMY_API_KEY
+REACT_APP_CONTRACT_ADDRESS=0xYourDeployedContractAddress<br>
+REACT_APP_ALCHEMY_KEY=YOUR_ALCHEMY_API_KEY<br>
 
-      •     Replace 0xYourDeployedContractAddress with the smart contract’s address.
-      •     Replace YOUR_ALCHEMY_API_KEY with your actual Alchemy API key.
+      •     Replace 0xYourDeployedContractAddress with the smart contract’s address.<br>
+      •     Replace YOUR_ALCHEMY_API_KEY with your actual Alchemy API key.<br>
 
 
-      Sidenote: You can use my contract adress if you want: 0x2300DAaa57ec42a93AA5892619A59534d9021bf7
+      Sidenote: You can use my contract adress if you want: 0x2300DAaa57ec42a93AA5892619A59534d9021bf7<br>
 
 📌 5. Start the Project
 
