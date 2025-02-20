@@ -89,8 +89,8 @@ http://localhost:3000
 
 🎉 That’s It!
 
-You’ve successfully cloned and set up the project! 🚀
-If you run into issues, check:
-      •     Your .env files are correctly set.
-      •     Your MetaMask is connected to Sepolia.
-      •     Your contract address is correct.
+You’ve successfully cloned and set up the project! 🚀<br>
+If you run into issues, check:<br>
+      •     Your .env files are correctly set.<br>
+      •     Your MetaMask is connected to Sepolia.<br>
+      •     Your contract address is correct.<br>
