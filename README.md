@@ -39,9 +39,9 @@ Since .env files are not included in GitHub, you need to create them manually.
 
 Create a .env file inside the backend/ folder and add:
 
-API_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY
-PRIVATE_KEY=YOUR_WALLET_PRIVATE_KEY
-ETHERSCAN_API_KEY=YOUR_ETHERSCAN_API_KEY
+API_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY<br>
+PRIVATE_KEY=YOUR_WALLET_PRIVATE_KEY<br>
+ETHERSCAN_API_KEY=YOUR_ETHERSCAN_API_KEY<br>
 
       •     Replace YOUR_ALCHEMY_API_KEY with your actual Alchemy API key.
       •     Replace YOUR_WALLET_PRIVATE_KEY with your MetaMask private key (Sepolia testnet).
