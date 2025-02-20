@@ -1,33 +1,92 @@
-How to Set Up the GeneticExam Project (Frontend and Backend)
+🚀 How to Clone and Run This Project
 
-Clone the Repository: Clone the entire repository to your local machine: git clone https://github.com/josefineweine/GeneticExam.git
+📌 1. Prerequisites
 
-Install Dependencies for the Frontend: Navigate to the frontend directory and install the required dependencies: cd frontend npm install
+Before you start, make sure you have:
+✅ Node.js (16+ recommended) installed
+✅ MetaMask installed in your browser
+✅ A free Alchemy API Key 
+✅ A free Sepolia testnet wallet with some test ETH (Get test ETH)
 
-Install Dependencies for the Backend: Navigate to the backend directory and install the required dependencies: cd ../geneticexam npm install
+📌 2. Clone the Project
 
-Set Up the Environment: Create an .env file in the root of the project and include your metadata CID and contract address: METADATA_CID=QmQmpXJBCos24nPQ9FtPoiqFAFNSswuqRaP5yNfE2AMUdg (this is to be used on the Register Donor page when you are connected) CONTRACT_ADDRESS=0x0b54FAD894c1EFC7B190cE92D122F5E93704D04B
+Open a terminal and run:
 
-Run the Project: If there are separate scripts for running the frontend and backend, run them as follows:
+git clone[ https://github.com/your-username/your-repo.git](https://github.com/josefineweine/geneticexam.git)
+cd geneticexam
 
-For Frontend: cd frontend npm start
 
-Access the Project: Open your browser and go to the URL specified in the project (e.g., http://localhost:3000 for frontend and backend ports) to access the application.
+📌 3. Install Dependencies
 
-My metadata CID QmQmpXJBCos24nPQ9FtPoiqFAFNSswuqRaP5yNfE2AMUdg
+Run the following commands to install everything:
 
-Main Contract Handling Donor Registration and Usage Tracking:
-Register New Donors:
+🟢 Backend (Smart Contracts)
 
-Users can register new donors by providing metadata (e.g., CID) and a maximum usage limit.
-Each donor is assigned a unique ID and the registering user is recorded as the owner.
-Track Donor Usage:
+cd geneticexam (this is the backend)
+npm install
 
-Donor usage is tracked with a usageCount, which is incremented each time the donor is used.
-Enforce Usage Limits:
+🔵 Frontend
 
-Each donor has a maxUsage limit.
-If a donor’s usage reaches the limit, the donor’s status is set to inactive, preventing further usage.
-Manage Donor Status:
+cd ../frontend
+npm install
 
-Donor status (isActive) is updated based on usage, automatically deactivating the donor once the usage limit is reached.
+📌 4. Set Up Environment Variables (.env)
+
+Since .env files are not included in GitHub, you need to create them manually.
+
+✅ Backend (backend/.env)
+
+Create a .env file inside the backend/ folder and add:
+
+API_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY
+PRIVATE_KEY=YOUR_WALLET_PRIVATE_KEY
+ETHERSCAN_API_KEY=YOUR_ETHERSCAN_API_KEY
+
+      •     Replace YOUR_ALCHEMY_API_KEY with your actual Alchemy API key.
+      •     Replace YOUR_WALLET_PRIVATE_KEY with your MetaMask private key (Sepolia testnet).
+      •     Replace YOUR_ETHERSCAN_API_KEY (optional, used for verifying contracts).
+
+✅ Frontend (frontend/.env)
+
+Create a .env file inside the frontend/ folder and add:
+
+REACT_APP_CONTRACT_ADDRESS=0xYourDeployedContractAddress
+REACT_APP_ALCHEMY_KEY=YOUR_ALCHEMY_API_KEY
+
+      •     Replace 0xYourDeployedContractAddress with the smart contract’s address.
+      •     Replace YOUR_ALCHEMY_API_KEY with your actual Alchemy API key.
+
+📌 5. Start the Project
+
+🟢 If You Want to Deploy the Smart Contract
+
+Only do this if you’re deploying a new instance of the contract:
+
+cd backend
+npx hardhat run scripts/deploy.js --network sepolia
+
+Copy the contract address from the output and update the frontend .env file.
+
+🔵 Start the Frontend
+
+cd frontend
+npm start  # If using React
+npm run dev  # If using Vite
+
+📌 6. Open the Application
+
+Go to:
+
+http://localhost:3000
+
+✅ Connect your MetaMask wallet
+✅ Test the app by registering donors, matching, and fetching data
+✅ Check the console (F12) for logs
+
+🎉 That’s It!
+
+You’ve successfully cloned and set up the project! 🚀
+If you run into issues, check:
+      •     Your .env files are correctly set.
+      •     Your MetaMask is connected to Sepolia.
+      •     Your contract address is correct.
