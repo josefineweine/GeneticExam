@@ -1,0 +1,5 @@
+npx hardhat run scripts/deploy.js --network sepolia
+await ethers.provider.getCode("0x2300DAaa57ec42a93AA5892619A59534d9021bf7");
+console.log(await contract.donorCount());
+const contract = await ethers.getContractAt("DonorRegistry", "0x2300DAaa57ec42a93AA5892619A59534d9021bf7");
+.help

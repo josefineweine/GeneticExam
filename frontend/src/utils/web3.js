@@ -7,37 +7,56 @@ let accounts;
 
 const CONTRACT_ADDRESS = "0x2300DAaa57ec42a93AA5892619A59534d9021bf7";
 
-// ✅ Ensure Web3 is properly initialized
-const initializeWeb3 = () => {
+export const initializeWeb3 = async () => {
   if (window.ethereum) {
     web3 = new Web3(window.ethereum);
+    accounts = await web3.eth.getAccounts();
   } else {
-    // ✅ Fallback to Alchemy or Infura if no MetaMask
-    web3 = new Web3(new Web3.providers.HttpProvider(process.env.ALCHEMY_API_URL));
+    throw new Error('Please install MetaMask!');
   }
 };
 
 export const connectWallet = async () => {
   try {
-    if (window.ethereum) {
-      web3 = new Web3(window.ethereum);
-      const userAccounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
+    await initializeWeb3();
+    const userAccounts = await window.ethereum.request({
+      method: 'eth_requestAccounts',
+    });
 
-      accounts = userAccounts;
-      const address = accounts[0];
+    accounts = userAccounts;
+    localStorage.setItem('walletAddress', accounts[0]);
+    setUpContract(accounts[0]);
 
-      setUpContract(address);
-
-      localStorage.setItem('walletAddress', address);
-      return { address };
-    } else {
-      throw new Error('Please install MetaMask!');
-    }
+    return { address: accounts[0] };
   } catch (error) {
     throw new Error('Failed to connect wallet: ' + error.message);
   }
+};
+
+const setUpContract = (address) => {
+  if (!web3) throw new Error('Web3 is not initialized.');
+  if (!Array.isArray(CONTRACT_ABI)) {
+    console.error('Invalid ABI format:', CONTRACT_ABI); // 🛑 Debug Log
+    throw new Error('Invalid ABI format.');
+  }
+
+  console.log('Initializing contract with ABI:', CONTRACT_ABI); // 🛑 Debug Log
+  console.log('Contract Address:', CONTRACT_ADDRESS); // 🛑 Debug Log
+
+  contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+  accounts = [address];
+
+  console.log('Contract instance:', contract); // 🛑 Debug Log
+};
+
+
+export const getContract = () => {
+  if (!contract) throw new Error('Contract not initialized. Connect wallet first.');
+  return contract;
+};
+
+export const getWalletAddress = () => {
+  return localStorage.getItem('walletAddress');
 };
 
 export const disconnectWallet = async () => {
@@ -48,52 +67,5 @@ export const disconnectWallet = async () => {
     accounts = []; // Clear accounts
   } catch (error) {
     throw new Error('Failed to disconnect wallet: ' + error.message);
-  }
-};
-
-const setUpContract = (address) => {
-  if (!web3) {
-    throw new Error('Web3 is not initialized.');
-  }
-
-  if (!Array.isArray(CONTRACT_ABI)) {
-    throw new Error('ABI is not in the correct format. Check abi-contract.json.');
-  }
-
-  contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
-  accounts = [address];
-};
-
-export const getContract = () => {
-  if (!contract) {
-    throw new Error('Contract is not initialized. Make sure the wallet is connected first.');
-  }
-  return contract;
-};
-
-export const getWalletAddress = () => {
-  return localStorage.getItem('walletAddress');
-};
-
-// ✅ Function to send transactions with manual gas settings
-export const sendTransaction = async (method, params = [], value = "0") => {
-  try {
-    const contractInstance = getContract();
-    const sender = getWalletAddress();
-    if (!sender) throw new Error("Wallet not connected");
-
-    const gasEstimate = await contractInstance.methods[method](...params).estimateGas({ from: sender });
-
-    const tx = await contractInstance.methods[method](...params).send({
-      from: sender,
-      gas: web3.utils.toHex(Math.round(gasEstimate * 1.2)), // ✅ Adding 20% buffer
-      value: web3.utils.toWei(value, "ether"),
-    });
-
-    console.log(`✅ Transaction successful: ${method}`, tx);
-    return tx;
-  } catch (error) {
-    console.error(`❌ Error executing transaction ${method}:`, error);
-    throw error;
   }
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getContract } from '../../contracts/contract'; // Import contract
-import { connectWallet } from '../../utils/web3';
+import { getContract } from '../../utils/web3';  // ✅ FIXED: Use utils/web3.js
+import { connectWallet, getWalletAddress } from '../../utils/web3'; // ✅ Import getWalletAddress
 import Alert from '../common/Alert';
 
 function Dashboard() {
@@ -12,7 +12,7 @@ function Dashboard() {
   const [pendingApprovals, setPendingApprovals] = useState([]);
   const [donors, setDonors] = useState([]);
   const [successfulMatches, setSuccessfulMatches] = useState([]);
-  const [donorCount, setDonorCount] = useState(null); // New state for donor count
+  const [donorCount, setDonorCount] = useState(null);
 
   const showSuccess = searchParams.get('success') === 'true';
 
@@ -21,16 +21,16 @@ function Dashboard() {
       try {
         const contract = await getContract();
         if (!contract) {
-          console.error("Contract not loaded!");
+          console.error("❌ Contract not loaded!");
           return;
         }
 
-        // Fetch donor count from the contract
-        const count = await contract.donorCount();
+        // ✅ FIX: Fetch donor count correctly
+        const count = await contract.methods.donorCount().call();
         setDonorCount(count.toString());
 
-        // Fetch donor list from contract
-        const donorsData = await contract.getDonors();
+        // ✅ FIX: Fetch donor list correctly
+        const donorsData = await contract.methods.getDonors().call();
         const formattedDonors = donorsData.map(donor => ({
           id: donor.id.toString(),
           metadataCID: donor.metadataCID,
@@ -41,7 +41,7 @@ function Dashboard() {
         }));
         setDonors(formattedDonors);
       } catch (error) {
-        console.error("Error fetching blockchain data:", error);
+        console.error("❌ Error fetching blockchain data:", error);
       }
     };
 
@@ -56,7 +56,7 @@ function Dashboard() {
     loadPendingApprovals();
   }, []);
 
-  const isWalletConnected = localStorage.getItem('walletAddress');
+  const isWalletConnected = Boolean(getWalletAddress()); // ✅ FIX: Use utility function
 
   const handleConnect = async () => {
     try {
@@ -74,8 +74,11 @@ function Dashboard() {
   const handleApprove = async (approval) => {
     try {
       const contract = await getContract();
-      await contract.incrementDonorUsage(approval.donorId);
-      console.log('Match successfully recorded on-chain!');
+      await contract.methods.incrementDonorUsage(approval.donorId).send({
+        from: getWalletAddress(),
+      });
+
+      console.log('✅ Match successfully recorded on-chain!');
 
       const updatedMatches = [
         ...successfulMatches,
@@ -96,7 +99,7 @@ function Dashboard() {
       setPendingApprovals(updatedApprovals);
       localStorage.setItem('pendingApprovals', JSON.stringify(updatedApprovals));
     } catch (error) {
-      console.error('Error approving match:', error);
+      console.error('❌ Error approving match:', error);
     }
   };
 
@@ -127,10 +130,10 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       {showSuccess && <Alert type="success" message="Donor successfully registered!" />}
-      <h2>Welcome to Donor site!</h2>
+      <h2>Welcome to Donor Site!</h2>
 
-      {/* Display Donor Count from Smart Contract */}
-      <h3> Total Registered Donors: {donorCount !== null ? donorCount : "Loading..."}</h3>
+      {/* Display Donor Count */}
+      <h3>Total Registered Donors: {donorCount !== null ? donorCount : "Loading..."}</h3>
 
       {/* Action Cards */}
       <div className="action-cards">

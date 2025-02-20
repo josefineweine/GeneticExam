@@ -5,7 +5,7 @@ const { Network, Alchemy } = require("alchemy-sdk");
 // ✅ Import ABI from JSON file in `src/config`
 const fs = require("fs");
 const path = require("path");
-const contractABI = require(path.join(__dirname, "../frontend/src/config/contract-abi.json"));
+const contractABI = require(path.join(__dirname, "../frontend/src/contracts/contract-abi.json"));
 
 // ✅ Define contract address from your config
 const donorRegistryAddress = "0x2300DAaa57ec42a93AA5892619A59534d9021bf7";

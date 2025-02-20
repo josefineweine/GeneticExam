@@ -7,7 +7,7 @@ module.exports = {
   networks: {
     hardhat: {},
     sepolia: {
-      url: process.env.API_URL, // Use the Alchemy URL for Sepolia
+      url: process.env.REACT_APP_ALCHEMY_API_URL, // Use the Alchemy URL for Sepolia
       accounts: [`0x${process.env.PRIVATE_KEY}`]  // Use your private key
     }
   },
